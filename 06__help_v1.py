@@ -133,13 +133,13 @@ class Play:
 
         self.round_results_label = Label(self.rounds_frame, text = 'Round Results',\
                                          width=32, bg = '#FFF2CC',\
-                                         font=('Arial', 10),\
+                                         font=('Arial', '10'),\
                                             pady = 5)
         self.round_results_label.grid(row=0,column=0,padx=5)
 
         self.next_button = Button(self.rounds_frame, text='Next Round',\
                                   fg='#FFFFFF', bg='#0088FC',\
-                                  font=('Arial',11,'bold'),\
+                                  font=('Arial','11','bold'),\
                                   width = 10,state=DISABLED,command=lambda: self.new_round())
         self.next_button.grid(row=0,column=1)
 
@@ -175,6 +175,7 @@ class Play:
             self.make_control_button.grid(row=0,column=item,padx=5,pady=5)
             # add buttons to control list
             self.control_button_ref.append(self.make_control_button)
+            self.to_help_btn = self.control_button_ref[0]
 
 
     # retrive colours from csv file 
@@ -335,14 +336,50 @@ class Play:
         print('You chose stats')
     
     def get_help(self):
-        print('You choose help')
+        Help(self)
 
     def close_play(self):
         # reshow root (ie: choose rounds) and end current 
         # game / allow new game to start
         root.deiconify()
         self.play_box.destroy()
+
+class Help:
+    def __init__(self, partner):
+        self.help_box = Toplevel()
+        self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help))
+
+        partner.to_help_btn.config(state=DISABLED)
+
+        # set up some color variables
+        colour_bg = '#FFE6CC'
+
+        self.help_frame = Frame(self.help_box, padx = 10, pady = 10, bg = colour_bg)
+        self.help_frame.grid()
+
+        self.help_heading = Label(self.help_frame, text = 'Help Page', fg= '#000000',\
+                                  bg = colour_bg, font = ('Arial', '16', 'bold'),\
+                                    justify='left')
+        self.help_heading.grid(row=0, padx=5,pady=5)
+
+        help_text = 'Your goal in this game is to beat the computer and you have an advantage - you get to choose your colour first. The points are associated with the colours HEX code. The Higher the value of your colour the higher the greater your score.\n\nTo see your statistics, click on the statistics button. Win the game by scoring more then the computer overall. Dont be discouraged if you dont win every round, its your overall score that counts.\n\nGood Luck! Choose Carefully :)'
+
+        self.help_info = Label(self.help_frame, fg='#000000', bg=colour_bg,text=help_text,font=('Arial','11'),wraplength=350,justify='left')
+        self.help_info.grid(row=1,padx=5,pady=5)
+
+        #dissmiss button
+        self.help_dismiss = Button(self.help_frame,fg='#FFFFFF',bg='#CC6600',text='Dismiss',font=('Arial','14'),command=lambda:self.close_help(partner))
+        self.help_dismiss.grid(row=2,padx=5,pady=5)
+
+    
+
+    def close_help(self,partner):
+        partner.to_help_btn.config(state=NORMAL)
         
+        self.help_box.destroy()
+
+
+
 
 
 
